@@ -22,11 +22,13 @@ import { CountryCode, Country } from "~/types/types";
 import { ChevronDown, ChevronUp } from "lucide-react-native";
 import { Controller, useFormContext } from "react-hook-form";
 import { TArtistAccountFormSchema } from "~/schema/artist.schema";
-import DatePicker from "react-native-date-picker";
+import DateTimePicker from "@react-native-community/datetimepicker";
 
 const StepOne = () => {
   const [countryCode, setCountryCode] = useState<CountryCode>("NP");
   const [country, setCountry] = useState<Country>();
+  const [date, setDate] = useState(new Date());
+  const [showpicker, setShowPicker] = useState(false);
 
   const {
     control,
@@ -36,6 +38,12 @@ const StepOne = () => {
   const onSelect = (country: Country) => {
     setCountryCode(country.cca2);
     setCountry(country);
+    console.log(country.name, "This is country");
+  };
+
+  const onDateChange = () => {
+    console.log(date, "This is date");
+    setShowPicker(false);
   };
 
   return (
@@ -121,23 +129,54 @@ const StepOne = () => {
 
         <View>
           <Label>Email</Label>
-          <Input placeholder="Enter your email" />
+          <Controller
+            control={control}
+            name="email"
+            render={({ field: { onChange, value } }) => (
+              <Input
+                autoCapitalize="none"
+                value={value}
+                onChangeText={onChange}
+                placeholder="Enter a email"
+              />
+            )}
+          />
+          {errors.email && (
+            <Text className="text-red-400">{errors.email.message}</Text>
+          )}
         </View>
 
         <View>
           <Label>Country Picker</Label>
           <View className="border flex flex-row justify-between border-gray-600 rounded-md bg-primary/5 p-1">
-            <CountryPicker
-              {...{
-                countryCode,
-                withFilter: true,
-                withFlag: true,
-                withCountryNameButton: true,
-                withCallingCode: true,
-                withEmoji: true,
-                onSelect,
-              }}
+            <Controller
+              name={"address.country"}
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <View className="border flex flex-row justify-between border-gray-600 rounded-md bg-primary/5 p-1">
+                  <CountryPicker
+                    {...{
+                      countryCode,
+                      withFilter: true,
+                      withFlag: true,
+                      withCountryNameButton: true,
+                      withCallingCode: true,
+                      withEmoji: true,
+                      onSelect,
+                    }}
+                  />
+                  <View className="items-center mt-2">
+                    <Text className="-mb-2 text-gray-400">▲</Text>
+                    <Text className="text-gray-400">▼</Text>
+                  </View>
+                </View>
+              )}
             />
+            {errors.address?.country && (
+              <Text className="text-red-400">
+                {errors.address.country.message}
+              </Text>
+            )}
             <View className="items-center mt-2">
               <ChevronUp size={16} className="-mb-2 text-gray-400" />
               <ChevronDown size={16} className="text-gray-400" />
@@ -147,29 +186,97 @@ const StepOne = () => {
 
         <View>
           <Label>Date of Birth</Label>
+
+          <TouchableOpacity
+            className="bg-pink-400 border p-2 rounded-md"
+            onPress={() => setShowPicker(true)}
+          >
+            <Text>Click me</Text>
+          </TouchableOpacity>
+          {showpicker && (
+            <DateTimePicker mode="date" onChange={onDateChange} value={date} />
+          )}
         </View>
 
         <View className="flex flex-row gap-4">
           <View className="flex-1">
             <Label>State</Label>
-            <Input placeholder="Enter your state" />
+            <Controller
+              control={control}
+              name={"address.state"}
+              render={({ field: { onChange, value } }) => (
+                <Input
+                  value={value}
+                  placeholder="Enter your state"
+                  onChangeText={onChange}
+                />
+              )}
+            />
+            {errors.address?.state && (
+              <Text className="text-red-400">
+                {errors.address.state.message}
+              </Text>
+            )}
           </View>
 
           <View className="flex-1">
             <Label>City</Label>
-            <Input placeholder="Enter your city" />
+            <Controller
+              control={control}
+              name={"address.city"}
+              render={({ field: { onChange, value } }) => (
+                <Input
+                  value={value}
+                  placeholder="Enter your city"
+                  onChangeText={onChange}
+                />
+              )}
+            />
+            {errors.address?.city && (
+              <Text className="text-red-400">
+                {errors.address.city.message}
+              </Text>
+            )}
           </View>
         </View>
 
         <View className="flex flex-row gap-4">
           <View className="flex-1">
             <Label>Street</Label>
-            <Input placeholder="Enter your street" />
+            <Controller
+              control={control}
+              name={"address.street"}
+              render={({ field: { onChange, value } }) => (
+                <Input
+                  value={value}
+                  placeholder="Enter your street"
+                  onChangeText={onChange}
+                />
+              )}
+            />
+            {errors.address?.street && (
+              <Text className="text-red-400">
+                {errors.address.street.message}
+              </Text>
+            )}
           </View>
 
           <View className="flex-1">
             <Label>Zip</Label>
-            <Input placeholder="Enter your zip" />
+            <Controller
+              control={control}
+              name={"address.zip"}
+              render={({ field: { onChange, value } }) => (
+                <Input
+                  value={value ? String(value) : ""}
+                  placeholder="Enter your zip"
+                  onChangeText={onChange}
+                />
+              )}
+            />
+            {errors.address?.zip && (
+              <Text className="text-red-400">{errors.address.zip.message}</Text>
+            )}
           </View>
         </View>
       </View>

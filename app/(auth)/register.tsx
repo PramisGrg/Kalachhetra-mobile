@@ -15,7 +15,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { cn } from "~/lib/utils";
-import DateTimePicker from "@react-native-community/datetimepicker";
 
 type TloginSchema = z.infer<typeof loginSchmea>;
 
@@ -174,21 +173,6 @@ const Register = () => {
         >
           <Text className="text-white text-center">Submit</Text>
         </TouchableOpacity>
-        <Button title="Open" onPress={() => setOpen(true)} />
-        <DateTimePicker
-          mode="date"
-          value={date}
-          // modal
-          // open={open}
-          // date={date}
-          // onConfirm={(date) => {
-          //   setOpen(false);
-          //   setDate(date);
-          // }}
-          // onCancel={() => {
-          //   setOpen(false);
-          // }}
-        />
       </View>
     </SafeAreaView>
   );
